@@ -29,6 +29,7 @@ import android.content.IntentFilter;
 import android.content.BroadcastReceiver;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.util.Log;
 import android.widget.Toast;
 import java.util.List;
@@ -56,6 +57,8 @@ public class AndroidWifiModule extends ReactContextBaseJavaModule implements And
 		cManager = (ConnectivityManager)reactContext.getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
 		cReceiver = new AndroidWifiConnectivityReceiver(cManager, reactContext, this);
 		cIntentFilter = new IntentFilter();
+		cIntentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
+		reactContext.addLifecycleEventListener(this);
 		context = (ReactApplicationContext) getReactApplicationContext();
 	}
 
@@ -67,6 +70,7 @@ public class AndroidWifiModule extends ReactContextBaseJavaModule implements And
 
 	@Override
 	public void onHostResume() {
+		Log.e(getName(), "BBBBB");
 		getReactApplicationContext().registerReceiver(cReceiver, cIntentFilter);
 	}
 	/* unregister the broadcast receiver */
@@ -82,6 +86,14 @@ public class AndroidWifiModule extends ReactContextBaseJavaModule implements And
 
 	public void onConnectivityChange(String wifiStateInfo) {
 		Log.e(getName(), "Wifi connectivity change triggered");
+		WritableMap params = Arguments.createMap();
+		sendConnectionStatusChangeEvent(getReactApplicationContext(), "AndroidWifiConnectionStatusChanged", params);
+	}
+
+	private void sendConnectionStatusChangeEvent(ReactContext reactContext, String eventName, @Nullable WritableMap params) {
+		reactContext
+				.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+				.emit(eventName, params);
 	}
 
 	//Method to load wifi list into string via Callback. Returns a stringified JSONArray
