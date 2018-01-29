@@ -46,7 +46,7 @@ public class AndroidWifiModule extends ReactContextBaseJavaModule implements And
 	ReactApplicationContext context;
 
 	//ConnectivityManager Instance
-	ConnectivityManager cManager;
+	WifiManager cManager;
 	BroadcastReceiver cReceiver;
 	IntentFilter cIntentFilter;
 
@@ -54,12 +54,12 @@ public class AndroidWifiModule extends ReactContextBaseJavaModule implements And
 	public AndroidWifiModule(ReactApplicationContext reactContext) {
 		super(reactContext);
 		wifi = (WifiManager)reactContext.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-		cManager = (ConnectivityManager)reactContext.getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+		cManager = (WifiManager)reactContext.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
 		cReceiver = new AndroidWifiConnectivityReceiver(cManager, reactContext, this);
 		cIntentFilter = new IntentFilter();
-//		Intent intent = new Intent(ConnectivityManager.CONNECTIVITY_ACTION);
-//		intent.putExtra(ConnectivityManager.EXTRA_NO_CONNECTIVITY, true);
-		cIntentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
+		cIntentFilter.addAction(WifiManager.SUPPLICANT_STATE_CHANGED_ACTION);
+		cIntentFilter.addAction(WifiManager.SUPPLICANT_CONNECTION_CHANGE_ACTION);
+
 		reactContext.addLifecycleEventListener(this);
 		context = (ReactApplicationContext) getReactApplicationContext();
 	}
@@ -86,12 +86,10 @@ public class AndroidWifiModule extends ReactContextBaseJavaModule implements And
 //        getReactApplicationContext().unregisterReceiver(mReceiver);
 	}
 
-	public void onConnectivityChange(String wifiState, String wifiName, String wifiType) {
+	public void onConnectivityChange(String wifiState) {
 		Log.e(getName(), "Wifi connectivity change triggered");
 		WritableMap result = Arguments.createMap();
 		result.putString("state", wifiState);
-		result.putString("name", wifiName);
-		result.putString("type", wifiType);
 		sendConnectionStatusChangeEvent(getReactApplicationContext(), "AndroidWifiConnectionStatusChanged", result);
 	}
 
