@@ -368,6 +368,12 @@ public class AndroidWifiModule extends ReactContextBaseJavaModule {
 		return sb.toString();
 	}
 
+	private void sendWifiStateChangeEvent(ReactContext reactContext, String eventName, @Nullable WritableMap params) {
+        reactContext
+                .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+                .emit(eventName, params);
+    }
+
 	class WifiReceiver extends BroadcastReceiver {
 
 		private Callback successCallback;
