@@ -57,6 +57,8 @@ public class AndroidWifiModule extends ReactContextBaseJavaModule implements And
 		cManager = (ConnectivityManager)reactContext.getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
 		cReceiver = new AndroidWifiConnectivityReceiver(cManager, reactContext, this);
 		cIntentFilter = new IntentFilter();
+//		Intent intent = new Intent(ConnectivityManager.CONNECTIVITY_ACTION);
+//		intent.putExtra(ConnectivityManager.EXTRA_NO_CONNECTIVITY, true);
 		cIntentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
 		reactContext.addLifecycleEventListener(this);
 		context = (ReactApplicationContext) getReactApplicationContext();
@@ -84,10 +86,13 @@ public class AndroidWifiModule extends ReactContextBaseJavaModule implements And
 //        getReactApplicationContext().unregisterReceiver(mReceiver);
 	}
 
-	public void onConnectivityChange(String wifiStateInfo) {
+	public void onConnectivityChange(String wifiState, String wifiName, String wifiType) {
 		Log.e(getName(), "Wifi connectivity change triggered");
-		WritableMap params = Arguments.createMap();
-		sendConnectionStatusChangeEvent(getReactApplicationContext(), "AndroidWifiConnectionStatusChanged", params);
+		WritableMap result = Arguments.createMap();
+		result.putString("state", wifiState);
+		result.putString("name", wifiName);
+		result.putString("type", wifiType);
+		sendConnectionStatusChangeEvent(getReactApplicationContext(), "AndroidWifiConnectionStatusChanged", result);
 	}
 
 	private void sendConnectionStatusChangeEvent(ReactContext reactContext, String eventName, @Nullable WritableMap params) {
@@ -459,3 +464,4 @@ public class AndroidWifiModule extends ReactContextBaseJavaModule implements And
 		}
 	}
 }
+

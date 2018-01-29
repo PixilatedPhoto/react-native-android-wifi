@@ -35,9 +35,20 @@ public class AndroidWifiConnectivityReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         Log.e(TAG, "Received Intent");
-        String action = intent.getAction();
-        NetworkInfo activeNetwork = mManager.getActiveNetworkInfo();
-        Log.e(TAG, action);
+        NetworkInfo netInfo = mManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+        NetworkInfo.DetailedState networkState = netInfo.getDetailedState();
+
+        String networkType = netInfo.getTypeName();
+        String networkName = netInfo.getExtraInfo();
+//        if (!networkState.equals("Disconnected")){
+//            Log.e(TAG, networkState);
+//        }
+//        if (listener != null) {
+//                listener.onConnectivityChange(networkState, networkName, networkType);
+//        }
+
+//        Log.e(TAG, networkState);
+        Log.e(TAG, "HELLO");
 
     }
 }
