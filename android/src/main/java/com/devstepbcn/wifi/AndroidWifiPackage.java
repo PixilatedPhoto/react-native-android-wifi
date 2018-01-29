@@ -12,20 +12,20 @@ import com.facebook.react.uimanager.ViewManager;
 
 public class AndroidWifiPackage implements ReactPackage {
 
-  @Override
-  public List<NativeModule> createNativeModules(ReactApplicationContext reactContext) {
-    List<NativeModule> modules = new ArrayList<>();
-    modules.add(new AndroidWifiModule(reactContext));
-    return modules;
-  }
+	@Override
+	public List<NativeModule> createNativeModules(ReactApplicationContext reactContext) {
+		List<NativeModule> modules = new ArrayList<>();
+		modules.add(new AndroidWifiModule(reactContext));
+		return modules;
+	}
 
-  // This method is kept for RN < 0.47 compatibility
-  public List<Class<? extends JavaScriptModule>> createJSModules() {
-    return Collections.emptyList();
-  }
+	// This method is kept for RN < 0.47 compatibility
+	public List<Class<? extends JavaScriptModule>> createJSModules() {
+		return Collections.emptyList();
+	}
 
-  @Override
-  public List<ViewManager> createViewManagers(ReactApplicationContext reactContext) {
-    return Arrays.<ViewManager>asList();
-  }
+	@Override
+	public List<ViewManager> createViewManagers(ReactApplicationContext reactContext) {
+		return Arrays.<ViewManager>asList();
+	}
 }

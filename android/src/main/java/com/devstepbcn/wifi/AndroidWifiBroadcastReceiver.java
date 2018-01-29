@@ -18,30 +18,30 @@ import com.facebook.react.bridge.ReactApplicationContext;
  */
 public class AndroidWifiConnectivityReceiver extends BroadcastReceiver {
 
-    private static final String TAG = "ConnectivityReceiver";
+	private static final String TAG = "ConnectivityReceiver";
 
-    private WifiManager mManager;
-    private ReactApplicationContext mActivity;
-    private AndroidWifiEventListener listener;
+	private WifiManager mManager;
+	private ReactApplicationContext mActivity;
+	private AndroidWifiEventListener listener;
 
 
-    public AndroidWifiConnectivityReceiver(WifiManager manager,
-                                       ReactApplicationContext activity, AndroidWifiEventListener listener) {
-        super();
-        Log.e(TAG, "AAAAAAA");
+	public AndroidWifiConnectivityReceiver(WifiManager manager,
+									   ReactApplicationContext activity, AndroidWifiEventListener listener) {
+		super();
+		Log.e(TAG, "AAAAAAA");
 
-        this.mManager = manager;
-        this.mActivity = activity;
-        this.listener = listener;
-    }
+		this.mManager = manager;
+		this.mActivity = activity;
+		this.listener = listener;
+	}
 
-    @Override
-    public void onReceive(Context context, Intent intent) {
-        Log.e(TAG, "Received Intent");
-        WifiInfo wifiInfo = mManager.getConnectionInfo();
+	@Override
+	public void onReceive(Context context, Intent intent) {
+		Log.e(TAG, "Received Intent");
+		WifiInfo wifiInfo = mManager.getConnectionInfo();
 //        int mState = mManager.getWifiState();
-        SupplicantState ss = wifiInfo.getSupplicantState();
-        NetworkInfo.DetailedState ds = wifiInfo.getDetailedStateOf(ss);
+		SupplicantState ss = wifiInfo.getSupplicantState();
+		NetworkInfo.DetailedState ds = wifiInfo.getDetailedStateOf(ss);
 //        NetworkInfo netInfo = NetworkInfo.State.
 //        NetworkInfo.DetailedState networkState = netInfo.getDetailedState();
 
@@ -50,13 +50,13 @@ public class AndroidWifiConnectivityReceiver extends BroadcastReceiver {
 //        if (!networkState.equals("Disconnected")){
 //            Log.e(TAG, networkState);
 //        }
-       if (listener != null) {
-               listener.onConnectivityChange(ds.toString());
-       }
+		if (listener != null) {
+				listener.onConnectivityChange(ds.toString());
+		}
 
-        // Log.e(TAG, ss.toString());
-        // Log.e(TAG, ds.toString());
-        Log.e(TAG, "HELLO");
+		// Log.e(TAG, ss.toString());
+		// Log.e(TAG, ds.toString());
+		Log.e(TAG, "HELLO");
 
-    }
+	}
 }
