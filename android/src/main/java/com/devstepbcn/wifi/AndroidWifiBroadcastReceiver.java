@@ -12,7 +12,7 @@ import com.facebook.react.bridge.ReactApplicationContext;
 /**
  * A BroadcastReceiver that notifies of important Wi-Fi p2p events.
  */
-public class AndroidWifiBroadcastReceiver extends BroadcastReceiver {
+public class AndroidWifiConnectivityReceiver extends BroadcastReceiver {
 
     private static final String TAG = "BroadcastReceiver";
 
@@ -22,7 +22,7 @@ public class AndroidWifiBroadcastReceiver extends BroadcastReceiver {
     private AndroidWifiEventListener listener;
 
 
-    public WiFiDirectBroadcastReceiver(WifiManager manager, Channel channel,
+    public AndroidWifiConnectivityReceiver(WifiManager manager, Channel channel,
                                        ReactApplicationContext activity, MyEventListener listener) {
         super();
         this.mManager = manager;
