@@ -214,11 +214,8 @@ public class AndroidWifiModule extends ReactContextBaseJavaModule {
 			// appropriate ciper is need to set according to security type used,
 			// ifcase of not added it will not be able to connect
 			conf.preSharedKey = "\"" + password + "\"";
-
 			conf.allowedProtocols.set(WifiConfiguration.Protocol.RSN);
-
 			conf.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.WPA_PSK);
-
 			conf.status = WifiConfiguration.Status.ENABLED;
 
 			conf.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.TKIP);
