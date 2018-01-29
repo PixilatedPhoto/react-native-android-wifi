@@ -29,6 +29,8 @@ import android.content.IntentFilter;
 import android.content.BroadcastReceiver;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.util.Log;
 import android.widget.Toast;
 import java.util.List;
 import java.lang.Thread;
@@ -37,16 +39,28 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class AndroidWifiModule extends ReactContextBaseJavaModule {
+public class AndroidWifiModule extends ReactContextBaseJavaModule implements AndroidWifiEventListener, LifecycleEventListener {
 
 	//WifiManager Instance
 	WifiManager wifi;
 	ReactApplicationContext context;
 
+	//ConnectivityManager Instance
+	WifiManager cManager;
+	BroadcastReceiver cReceiver;
+	IntentFilter cIntentFilter;
+
 	//Constructor
 	public AndroidWifiModule(ReactApplicationContext reactContext) {
 		super(reactContext);
-		wifi = (WifiManager)reactContext.getSystemService(Context.WIFI_SERVICE);
+		wifi = (WifiManager)reactContext.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+		cManager = (WifiManager)reactContext.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+		cReceiver = new AndroidWifiConnectivityReceiver(cManager, reactContext, this);
+		cIntentFilter = new IntentFilter();
+		cIntentFilter.addAction(WifiManager.SUPPLICANT_STATE_CHANGED_ACTION);
+		cIntentFilter.addAction(WifiManager.SUPPLICANT_CONNECTION_CHANGE_ACTION);
+
+		reactContext.addLifecycleEventListener(this);
 		context = (ReactApplicationContext) getReactApplicationContext();
 	}
 
@@ -54,6 +68,35 @@ public class AndroidWifiModule extends ReactContextBaseJavaModule {
 	@Override
 	public String getName() {
 		return "AndroidWifiModule";
+	}
+
+	@Override
+	public void onHostResume() {
+		Log.e(getName(), "BBBBB");
+		getReactApplicationContext().registerReceiver(cReceiver, cIntentFilter);
+	}
+	/* unregister the broadcast receiver */
+	@Override
+	public void onHostPause() {
+		getReactApplicationContext().unregisterReceiver(cReceiver);
+	}
+
+	@Override
+	public void onHostDestroy() {
+//        getReactApplicationContext().unregisterReceiver(mReceiver);
+	}
+
+	public void onConnectivityChange(String wifiState) {
+		Log.e(getName(), "Wifi connectivity change triggered");
+		WritableMap result = Arguments.createMap();
+		result.putString("state", wifiState);
+		sendConnectionStatusChangeEvent(getReactApplicationContext(), "AndroidWifiConnectionStatusChanged", result);
+	}
+
+	private void sendConnectionStatusChangeEvent(ReactContext reactContext, String eventName, @Nullable WritableMap params) {
+		reactContext
+				.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+				.emit(eventName, params);
 	}
 
 	//Method to load wifi list into string via Callback. Returns a stringified JSONArray
@@ -419,3 +462,4 @@ public class AndroidWifiModule extends ReactContextBaseJavaModule {
 		}
 	}
 }
+
