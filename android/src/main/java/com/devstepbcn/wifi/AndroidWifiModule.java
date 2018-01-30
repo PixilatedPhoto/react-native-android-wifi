@@ -96,7 +96,7 @@ public class AndroidWifiModule extends ReactContextBaseJavaModule implements And
 			cReceiver = new AndroidWifiStateReceiver(cManager, getReactApplicationContext(), this);
 			cIntentFilter = new IntentFilter();
 			cIntentFilter.addAction(WifiManager.SUPPLICANT_STATE_CHANGED_ACTION);
-			cIntentFilter.addAction(WifiManager.SUPPLICANT_CONNECTION_CHANGE_ACTION);
+			// cIntentFilter.addAction(WifiManager.SUPPLICANT_CONNECTION_CHANGE_ACTION);
 			getReactApplicationContext().addLifecycleEventListener(this);
 			getReactApplicationContext().registerReceiver(cReceiver, cIntentFilter);
 		} else if (cReceiverRegistered == false) {
