@@ -1,6 +1,4 @@
-package com.pixilated.wallpixi.wifidirectmanager;
-
-import android.net.wifi.p2p.WifiP2pDeviceList;
+package com.devstepbcn.wifi;
 
 public interface AndroidWifiEventListener {
 	void onWifiStateChange (String wifiStateInfo);

@@ -24,7 +24,7 @@ public class AndroidWifiStateReceiver extends BroadcastReceiver {
 	private ReactApplicationContext mActivity;
 	private AndroidWifiEventListener listener;
 
-	public AndroidWifiConnectivityReceiver(WifiManager manager,
+	public AndroidWifiStateReceiver(WifiManager manager,
 									   ReactApplicationContext activity, AndroidWifiEventListener listener) {
 		super();
 		this.mManager = manager;
