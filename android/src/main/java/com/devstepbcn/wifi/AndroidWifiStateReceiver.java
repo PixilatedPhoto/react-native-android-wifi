@@ -39,7 +39,7 @@ public class AndroidWifiStateReceiver extends BroadcastReceiver {
 		NetworkInfo.DetailedState ds = wifiInfo.getDetailedStateOf(ss);
 
 		if (listener != null) {
-				listener.onConnectivityChange(ds.toString());
+				listener.onWifiStateChange(ds.toString());
 		}
 	}
 }

@@ -112,7 +112,7 @@ public class AndroidWifiModule extends ReactContextBaseJavaModule implements And
 		}
 	}
 
-	public void onConnectivityChange(String wifiState) {
+	public void onWifiStateChange(String wifiState) {
 		WritableMap result = Arguments.createMap();
 		result.putString("state", wifiState);
 		sendConnectionStatusChangeEvent(getReactApplicationContext(), "AndroidWifiStateChanged", result);
