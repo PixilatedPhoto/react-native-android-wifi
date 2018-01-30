@@ -16,9 +16,9 @@ import com.facebook.react.bridge.ReactApplicationContext;
 /**
  * A BroadcastReceiver that notifies of important Wi-Fi p2p events.
  */
-public class AndroidWifiConnectivityReceiver extends BroadcastReceiver {
+public class AndroidWifiStateReceiver extends BroadcastReceiver {
 
-	private static final String TAG = "ConnectivityReceiver";
+	private static final String TAG = "AndroidWifiStateReceiver";
 
 	private WifiManager mManager;
 	private ReactApplicationContext mActivity;
@@ -28,8 +28,6 @@ public class AndroidWifiConnectivityReceiver extends BroadcastReceiver {
 	public AndroidWifiConnectivityReceiver(WifiManager manager,
 									   ReactApplicationContext activity, AndroidWifiEventListener listener) {
 		super();
-		Log.e(TAG, "AAAAAAA");
-
 		this.mManager = manager;
 		this.mActivity = activity;
 		this.listener = listener;
@@ -37,26 +35,12 @@ public class AndroidWifiConnectivityReceiver extends BroadcastReceiver {
 
 	@Override
 	public void onReceive(Context context, Intent intent) {
-		Log.e(TAG, "Received Intent");
 		WifiInfo wifiInfo = mManager.getConnectionInfo();
-//        int mState = mManager.getWifiState();
 		SupplicantState ss = wifiInfo.getSupplicantState();
 		NetworkInfo.DetailedState ds = wifiInfo.getDetailedStateOf(ss);
-//        NetworkInfo netInfo = NetworkInfo.State.
-//        NetworkInfo.DetailedState networkState = netInfo.getDetailedState();
 
-//        String networkType = netInfo.getTypeName();
-//        String networkName = netInfo.getExtraInfo();
-//        if (!networkState.equals("Disconnected")){
-//            Log.e(TAG, networkState);
-//        }
 		if (listener != null) {
 				listener.onConnectivityChange(ds.toString());
 		}
-
-		// Log.e(TAG, ss.toString());
-		// Log.e(TAG, ds.toString());
-		Log.e(TAG, "HELLO");
-
 	}
 }
