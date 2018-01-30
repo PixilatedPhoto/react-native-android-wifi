@@ -49,18 +49,14 @@ public class AndroidWifiModule extends ReactContextBaseJavaModule implements And
 	WifiManager cManager;
 	BroadcastReceiver cReceiver;
 	IntentFilter cIntentFilter;
+	Boolean cReceiverRegistered;
 
 	//Constructor
 	public AndroidWifiModule(ReactApplicationContext reactContext) {
 		super(reactContext);
 		wifi = (WifiManager)reactContext.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
 		cManager = (WifiManager)reactContext.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-		cReceiver = new AndroidWifiStateReceiver(cManager, reactContext, this);
-		cIntentFilter = new IntentFilter();
-		cIntentFilter.addAction(WifiManager.SUPPLICANT_STATE_CHANGED_ACTION);
-		cIntentFilter.addAction(WifiManager.SUPPLICANT_CONNECTION_CHANGE_ACTION);
-
-		reactContext.addLifecycleEventListener(this);
+		cReceiverRegistered = false;
 		context = (ReactApplicationContext) getReactApplicationContext();
 	}
 
@@ -72,17 +68,48 @@ public class AndroidWifiModule extends ReactContextBaseJavaModule implements And
 
 	@Override
 	public void onHostResume() {
-		getReactApplicationContext().registerReceiver(cReceiver, cIntentFilter);
+		if (cReceiverRegistered == false) {
+			getReactApplicationContext().registerReceiver(cReceiver, cIntentFilter);
+			cReceiverRegistered = true;
+		}
 	}
-	/* unregister the broadcast receiver */
+
 	@Override
 	public void onHostPause() {
-		getReactApplicationContext().unregisterReceiver(cReceiver);
+		if (cReceiverRegistered == true) {
+			getReactApplicationContext().unregisterReceiver(cReceiver);
+			cReceiverRegistered = false;
+		}
 	}
 
 	@Override
 	public void onHostDestroy() {
-//        getReactApplicationContext().unregisterReceiver(mReceiver);
+		if (cReceiverRegistered == true) {
+			getReactApplicationContext().unregisterReceiver(cReceiver);
+			cReceiverRegistered = false;
+		}
+	}
+
+	@ReactMethod
+	public void registerWifiStateReceiver() {
+		if (cReceiver == null) {
+			cReceiver = new AndroidWifiStateReceiver(cManager, getReactApplicationContext(), this);
+			cIntentFilter = new IntentFilter();
+			cIntentFilter.addAction(WifiManager.SUPPLICANT_STATE_CHANGED_ACTION);
+			cIntentFilter.addAction(WifiManager.SUPPLICANT_CONNECTION_CHANGE_ACTION);
+			getReactApplicationContext().addLifecycleEventListener(this);
+		} else if (cReceiverRegistered == false) {
+			getReactApplicationContext().registerReceiver(cReceiver, cIntentFilter);
+		}
+		cReceiverRegistered = true;
+	}
+
+	@ReactMethod
+	public void unregisterWifiStateReceiver() {
+		if (cReceiverRegistered == true) {
+			getReactApplicationContext().unregisterReceiver(cReceiver);
+			cReceiverRegistered = false;
+		}
 	}
 
 	public void onConnectivityChange(String wifiState) {
