@@ -39,7 +39,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class AndroidWifiModule extends ReactContextBaseJavaModule implements AndroidWifiEventListener, LifecycleEventListener {
+public class AndroidWifiModule extends ReactContextBaseJavaModule implements AndroidWifiEventListener {
 
 	//WifiManager Instance
 	WifiManager wifi;
@@ -66,30 +66,6 @@ public class AndroidWifiModule extends ReactContextBaseJavaModule implements And
 		return "AndroidWifiModule";
 	}
 
-	@Override
-	public void onHostResume() {
-		if (cReceiverRegistered == false) {
-			getReactApplicationContext().registerReceiver(cReceiver, cIntentFilter);
-			cReceiverRegistered = true;
-		}
-	}
-
-	@Override
-	public void onHostPause() {
-		if (cReceiverRegistered == true) {
-			getReactApplicationContext().unregisterReceiver(cReceiver);
-			cReceiverRegistered = false;
-		}
-	}
-
-	@Override
-	public void onHostDestroy() {
-		if (cReceiverRegistered == true) {
-			getReactApplicationContext().unregisterReceiver(cReceiver);
-			cReceiverRegistered = false;
-		}
-	}
-
 	@ReactMethod
 	public void registerWifiStateReceiver() {
 		if (cReceiver == null) {
@@ -97,7 +73,6 @@ public class AndroidWifiModule extends ReactContextBaseJavaModule implements And
 			cIntentFilter = new IntentFilter();
 			cIntentFilter.addAction(WifiManager.SUPPLICANT_STATE_CHANGED_ACTION);
 			// cIntentFilter.addAction(WifiManager.SUPPLICANT_CONNECTION_CHANGE_ACTION);
-			getReactApplicationContext().addLifecycleEventListener(this);
 			getReactApplicationContext().registerReceiver(cReceiver, cIntentFilter);
 		} else if (cReceiverRegistered == false) {
 			getReactApplicationContext().registerReceiver(cReceiver, cIntentFilter);
